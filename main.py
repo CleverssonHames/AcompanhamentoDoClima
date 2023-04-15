@@ -1,56 +1,65 @@
 
 import discord  
-from discord.ext import tasks
+from discord.ext import commands, tasks
 from atualizaClima import Atualizaclima
 import asyncio 
 
-
-client = discord.Client(intents=discord.Intents.default())
+#client = discord.Client(intents=intents)
+#client = discord.Client(intents=discord.Intents.default())
 
 
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
+bot = commands.Bot(command_prefix='>', intents=intents)
 
-client = discord.Client(intents=intents)
-
-
-@client.event
+@bot.event
 async def on_ready():
-  print(f'Você esta logado com {client.user}')
+  print(f'Você esta logado com {bot.user}')
 
-@client.event
+
+
+@bot.event
 async def on_message(message):
-
-  global on_clima
-
-  if message.author == client.user:
+  if message.author == bot.user:
     return
   
-  if message.content.startswith('comandos'):
-    msg = (
-    '\n** #COMANDOS **'
-    '\n👉 Ver clima: +Nome da cidade'
-    '\n👉 Parar: -p'
-    )
-    await message.channel.send(msg)
+  global on_clima
   
-  if message.content.startswith('+'):
-    cidade = message.content.split("+", 2)
-    
-    
+  if '&' in message.content:
+    cidade = message.content.split("&", 2)
+
     @tasks.loop(minutes=60)
     async def on_clima():
       tempo = Atualizaclima.atu_clima(cidade[1])
       await message.channel.send(tempo)
     on_clima.start()
 
-  if message.content.startswith('-p'):
+  if 'stop' in message.content:
     msg = ("Que pena!"
-          "\nQuando precisar é só chamar." 
-          "\nAté mais! 👋")
+        "\nQuando precisar é só chamar." 
+        "\nAté mais! 👋")
     await message.channel.send(msg)      
     on_clima.cancel()
 
-client.run(
+  await bot.process_commands(message)
+
+
+
+@bot.command(name='Ola')
+async def ola(ctx):
+  await ctx.message.channel.send('Olá querids')
+
+
+
+@bot.command(name='comandos')
+async def comandos(ctx):
+  msg = (
+    '\n** #COMANDOS **'
+    '\n👉 Ver clima: +Nome da cidade'
+    '\n👉 Parar: -p'
+    )
+  await ctx.message.channel.send(msg)
+
+bot.run(
   'MTA4OTU4NjA2MTUwOTkzNTE5NQ.GTC780.qxidaBe0SaEuxuXO7Hd64QihLSv_367kPc4gZY')
