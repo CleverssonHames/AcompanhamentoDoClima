@@ -61,5 +61,4 @@ async def comandos(ctx):
     )
   await ctx.message.channel.send(msg)
 
-bot.run(
-  'MTA4OTU4NjA2MTUwOTkzNTE5NQ.GTC780.qxidaBe0SaEuxuXO7Hd64QihLSv_367kPc4gZY')
+bot.run(${{ TOKEN }})
