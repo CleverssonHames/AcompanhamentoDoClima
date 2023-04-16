@@ -1,9 +1,12 @@
 
-import discord  
+import discord, os 
 from discord.ext import commands, tasks
 from atualizaClima import Atualizaclima
-import asyncio 
+from dotenv import load_dotenv
 
+load_dotenv()
+
+ENV_TOKEN_BOT = os.environ.get('TOKEN_BOT')
 #client = discord.Client(intents=intents)
 #client = discord.Client(intents=discord.Intents.default())
 
@@ -44,6 +47,11 @@ async def on_message(message):
 
   await bot.process_commands(message)
 
+@bot.event
+async def on_member_join(member):
+  msg = (f'Olá {member.name}! 👋 \nSeja bem vindo ao *TempoX* \nAqui você sempre está no Clima 😁')
+  await  member.send(msg)
+
 
 
 @bot.command(name='Ola')
@@ -56,9 +64,11 @@ async def ola(ctx):
 async def comandos(ctx):
   msg = (
     '\n** #COMANDOS **'
-    '\n👉 Ver clima: +Nome da cidade'
-    '\n👉 Parar: -p'
+    '\n👉 Ver clima: >&SuaCidade'
+    '\n👉 Parar: >stop'
     )
   await ctx.message.channel.send(msg)
 
-bot.run(${{ TOKEN }})
+
+
+bot.run(ENV_TOKEN_BOT)

@@ -1,11 +1,15 @@
 import requests
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+ENV_API_KEY = os.environ.get('API_KEY') 
 
 # Configuraçã API
 class Atualizaclima:
 
   def atu_clima(cidade):
-    API_KEY = "c8bdb8342634bf01667eff378872945d"
+    API_KEY = ENV_API_KEY
     vLink = f"https://api.openweathermap.org/data/2.5/weather?q={cidade}&appid={API_KEY}&lang=pt_br"
 
     req = requests.get(vLink)
